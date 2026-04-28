@@ -1,6 +1,6 @@
 # API Routes
 
-This document lists the application's HTTP routes, with a short description, authentication requirement, request body (if any), response model, and status codes.
+This document lists the application's HTTP routes, with a short description, authentication requirement, request body , response model, and status codes.
 
 **Root**
 - **GET /**: Returns a simple greeting message. No auth. Response: {"message": "Hello World!"} (200)
