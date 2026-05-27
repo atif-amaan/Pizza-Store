@@ -1,4 +1,3 @@
-from cryptography.hazmat.primitives.ciphers import algorithms
 from fastapi import HTTPException, status, Request, Depends
 from src.user.user_models import UserModel
 from src.user.user_schema import Register,Login

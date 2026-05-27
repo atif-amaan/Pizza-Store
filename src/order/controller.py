@@ -27,7 +27,7 @@ async def get_all_orders(user:UserResponse, db:Session):
     role = user.is_staff
     if not role:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
-                            detail="Unauthorized to perfrom the action")
+                            detail="Unauthorized to perform the action")
     
     orders = db.query(OrderModel).all()
 
@@ -41,7 +41,7 @@ async def fetch_user_orders(user_id:int, user:UserResponse, db:Session):
     role = user.is_staff
     if not role:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
-                            detail="Unauthorized to perfrom the action")
+                            detail="Unauthorized to perform the action")
     
     orders = db.query(OrderModel).filter(OrderModel.user_id == user_id).all()
 
@@ -62,7 +62,7 @@ async def fetch_specific_user_orders(order_id: int, user:UserResponse, db:Sessio
     
     if order.user_id != user.id and not user.is_staff:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
-                            detail="Unauthorized to perfrom the action")
+                            detail="Unauthorized to perform the action")
     
 
     return order
@@ -75,7 +75,7 @@ async def patch_order(order_id, data:PatchOrder, user:UserResponse, db: Session)
     
     if order.user_id != user.id and not user.is_staff:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
-                            detail="Unauthorized to perfrom the action")
+                            detail="Unauthorized to perform the action")
     
     update_data = data.model_dump(exclude_unset=True)
 
