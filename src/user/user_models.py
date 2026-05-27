@@ -6,8 +6,8 @@ class UserModel(Base):
     __tablename__ = "user"
 
     id = Column(Integer,primary_key=True)
-    username = Column(String(255), nullable = False)
-    email =  Column(String(255), nullable = False)
+    username = Column(String(255), nullable = False, unique=True)
+    email =  Column(String(255), nullable = False, unique=True)
     password =  Column(String(255), nullable = False)
     is_active = Column(Boolean, default = False)
     is_staff = Column(Boolean, default=False)

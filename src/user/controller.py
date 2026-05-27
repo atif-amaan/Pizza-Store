@@ -1,3 +1,4 @@
+from cryptography.hazmat.primitives.ciphers import algorithms
 from fastapi import HTTPException, status, Request, Depends
 from src.user.user_models import UserModel
 from src.user.user_schema import Register,Login
@@ -48,7 +49,7 @@ async def register_user(user:Register,db:Session):
         username = user.username,
         email = user.email,
         password = generate_password_hash(user.password),
-        is_active = user.is_active
+        is_active = False
     )
 
     db.add(new_user)
@@ -61,13 +62,13 @@ async def login_user(body:Login, db:Session):
     user = db.query(UserModel).filter(UserModel.email == body.email).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Email is not registered")
+                            detail="Invalid email or password")
     
     password = check_password_hash(password = body.password , pwhash = user.password)
     
     if not password:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail="Incorrect Password")
+                            detail="Invalid email or password")
     access_token = await create_access_token(user.id)
     refresh_token = await create_refresh_token(user.id)
     
@@ -85,7 +86,7 @@ async def authentication(request:Request, db:Session):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                                 detail="Invalid token type")
         user_id = data["_id"]
-        user = db.query(UserModel).get(user_id)
+        user = db.get(UserModel, user_id)
 
         if not user:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
@@ -93,11 +94,11 @@ async def authentication(request:Request, db:Session):
         return user
     
     except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="user unauthorized")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="user unauthorized")
     
-async def check_refresh_token(requst:Request, db:Session):
+async def check_refresh_token(request:Request, db:Session):
     try:
-        header = requst.headers.get("Authorization")
+        header = request.headers.get("Authorization")
         refresh_token = header.split(' ')[-1]
         data = jwt.decode(refresh_token, settings.JWT_SECRET, algorithms=settings.ALGORITHM)
         if not data["type"] == "refresh":
@@ -115,7 +116,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     """
     try: 
         token = credentials.credentials
-        data = jwt.decode(token, settings.JWT_SECRET, algorithm = 
+        data = jwt.decode(token, settings.JWT_SECRET, algorithms= 
         settings.ALGORITHM)
 
         if not data["type"] == "access":

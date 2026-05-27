@@ -46,5 +46,5 @@ async def auth(request:Request, db:Session = Depends(get_db)):
     summary="Refresh Access Token",
     description="Exchange a valid refresh token (from cookies or headers) for a new access token.",
 )
-async def refresh(requst:Request, db:Session = Depends(get_db)):
-    return await check_refresh_token(requst, get_db)
+async def refresh(request:Request, db:Session = Depends(get_db)):
+    return await check_refresh_token(request, db)

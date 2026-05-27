@@ -27,7 +27,7 @@ async def get_all_orders(user:UserResponse, db:Session):
     role = user.is_staff
     if not role:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
-                            detail="Unauthorize to perfrom the action")
+                            detail="Unauthorized to perfrom the action")
     
     orders = db.query(OrderModel).all()
 
@@ -41,7 +41,7 @@ async def fetch_user_orders(user_id:int, user:UserResponse, db:Session):
     role = user.is_staff
     if not role:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
-                            detail="Unauthorize to perfrom the action")
+                            detail="Unauthorized to perfrom the action")
     
     orders = db.query(OrderModel).filter(OrderModel.user_id == user_id).all()
 
@@ -53,17 +53,17 @@ async def fetch_specific_user_orders(order_id: int, user:UserResponse, db:Sessio
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail= "User not found")
     order = db.query(OrderModel).filter(OrderModel.id == order_id).first()
-    print(order.user_id)
-    print(user.id)
-    if order.user_id != user.id and not user.is_staff:
-        raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
-                            detail="Unauthorize to perfrom the action")
-    
+
     if not order:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Order not found"
         )
+    
+    if order.user_id != user.id and not user.is_staff:
+        raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
+                            detail="Unauthorized to perfrom the action")
+    
 
     return order
 
@@ -75,7 +75,7 @@ async def patch_order(order_id, data:PatchOrder, user:UserResponse, db: Session)
     
     if order.user_id != user.id and not user.is_staff:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
-                            detail="Unauthorize to perfrom the action")
+                            detail="Unauthorized to perfrom the action")
     
     update_data = data.model_dump(exclude_unset=True)
 
@@ -97,7 +97,7 @@ async def patch_order_status(
     order = db.query(OrderModel).filter(OrderModel.id == order_id).first()
 
     if not order:
-        HTTPException(status_code = status.HTTP_404_NOT_FOUND,
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND,
                       detail="Order not found")
         
     if not user.is_staff:
@@ -115,7 +115,7 @@ async def remove_order(order_id: int, user:UserResponse, db:Session):
                             detail="Unauthorized to perform the action")
     order = db.query(OrderModel).filter(OrderModel.id == order_id).first()
     if not order:
-        raise HTTPException(status_code=status.HTTP_404_UNAUTHORIZED,
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Order not found")
     db.delete(order)
     db.commit()

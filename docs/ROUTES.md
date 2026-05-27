@@ -24,5 +24,3 @@ Notes:
 - Models referenced are defined under `src/user/user_schema.py` and `src/order/order_schema.py`.
 - Authentication dependency is provided by `src/user/controller.py` (`get_current_user`, `authentication`).
 - Database dependency `get_db` (SQLAlchemy `Session`) is provided by `src/utils/db.py`.
-
-If you want, I can expand each entry with full request/response examples and expected error codes.

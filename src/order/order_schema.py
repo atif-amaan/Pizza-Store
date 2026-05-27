@@ -4,8 +4,8 @@ from typing import Optional, Literal
 
 class OrderSchema(BaseModel):
     quantity: int 
-    order_status: Literal['pending', 'in-transit', 'delivered'] = None
-    pizza_size: Literal['small', 'medium', 'large', 'extra-large'] = None
+    order_status: Literal['pending', 'in-transit', 'delivered'] = "pending"
+    pizza_size: Literal['small', 'medium', 'large', 'extra-large'] = "small"
 
     class Config:
         from_attributes = True

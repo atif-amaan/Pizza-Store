@@ -1,14 +1,13 @@
 
-from pydantic import BaseModel, StringConstraints
+from pydantic import BaseModel, StringConstraints, EmailStr
 from typing import Annotated, Optional
 
 _MaxLen = 255
 
 class Register(BaseModel):
     username: Annotated[str, StringConstraints(max_length=_MaxLen)]
-    email: Annotated[str, StringConstraints(max_length=_MaxLen)]
+    email: EmailStr
     password: str
-    is_active: Optional[bool] = None
 
     class Config:
         from_attributes = True
